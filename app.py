@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, url_for
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py')
 
 @app.route('/')
 def main():
@@ -20,7 +21,7 @@ def greetings(name):
 
 @app.route('/admin')
 def admin():
-    to_url = url_for("greetings", name="administrator", external=True)   # --> "/hi/admin"
+    to_url = url_for("greetings", name="administrator", _external=True)   # --> "/hi/admin"
     print(to_url)
     return redirect(to_url)
 
