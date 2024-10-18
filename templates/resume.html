@@ -1,29 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Resume</title>
-</head>
-<body>
-<h1>Резюме</h1>
-<section>
-    <h2>Про мене:</h2>
+{% extends "base.html" %}
+
+{% block title %}Резюме{% endblock %}
+
+{% block navmenu %}
+<li class="nav-item"><a class="nav-link" href="#about">Про себе</a></li>
+<li class="nav-item"><a class="nav-link" href="#education">Освіта</a></li>
+<li class="nav-item"><a class="nav-link" href="#skills">Навички</a></li>
+<li class="nav-item"><a class="nav-link" href="#experience">Досвід роботи</a></li>
+{% endblock %}
+
+{% block content %}
+<h1>Моє резюме</h1>
+
+<section id="about">
+    <h2>Про мене</h2>
     <ul>
         <li>Ім'я та Прізвище: Крупка Юлія</li>
         <li>Вік: 19 років</li>
         <li>Хоббі: читання та малювання</li>
     </ul>
 </section>
-<section>
+
+<section id="education">
     <h2>Освіта</h2>
     <ul>
         <li>Середня освіта: Тисменицький ліцей</li>
         <li>Вища освіта: ПНУ ім. Василя Стефаника, 121 Інженерія програмного забезпечення.</li>
     </ul>
 </section>
-<section>
+
+<section id="skills">
     <h2>Навички</h2>
-    <h3>Під час навчання в університеті здобула наступні навички: </h3>
     <ul>
         <li>Програмування мовою Java</li>
         <li>Програмування мовою Php</li>
@@ -33,12 +40,14 @@
         <li>Знання MySql</li>
     </ul>
 </section>
-<section>
+
+<section id="experience">
     <h2>Досвід роботи</h2>
     <p>Досвіду роботи поки немає.</p>
 </section>
-<section>
-<img src="{{ url_for('static', filename='images/resumeImage.png') }}" alt="logo" width="300px">
+
+<section class="photo text-center">
+    <img src="{{ url_for('static', filename='images/resumeImage.png') }}" alt="Resume Image" class="img-fluid" width="300px">
 </section>
-</body>
-</html>
+
+{% endblock %}

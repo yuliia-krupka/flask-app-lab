@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+section {
+    border: 2px lightgray dashed;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.photo {
+    border: none;
+}
+
+
+h1 {
+    padding: 30px 0;
+}
+
+footer {
+    background-color: lightgray;
+}
