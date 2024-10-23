@@ -28,3 +28,26 @@ ul li {
 nav, footer {
     background-color: #d1d2d4;
 }
+
+.nav_greet {
+    background-color: #fff3cd;
+}
+
+.greet_links a {
+    text-decoration: none;
+    color: #fd7e14;
+}
+
+.greet_links a:hover {
+    color: #b34100;
+    font-weight: bolder;
+    transition: font-weight 0.5s ease, color 0.5s ease;
+}
+
+.provided{
+    color: #146c43;
+}
+
+.not_provided{
+    color: #b02a37;
+}
