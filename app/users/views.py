@@ -1,6 +1,30 @@
 from . import user_bp
-from flask import render_template, request, redirect, url_for, abort, make_response
+from flask import render_template, request, redirect, url_for, make_response, session, flash
 from datetime import datetime, timedelta
+
+@user_bp.route('/profile')
+def get_profile():
+    if "username" in session:
+        username_value = session["username"]
+        return render_template("profile.html", username=username_value)
+    flash("Invalid: Session.", "danger")
+    return redirect(url_for("users.login"))
+
+@user_bp.route("/login",  methods=['GET', 'POST'])
+def login():
+    if request.method == "POST":
+        username = request.form["login"]
+        session["username"] = username
+        flash("Success: session added successfully.", "success")
+        return redirect(url_for("users.get_profile"))
+    return render_template("login.html")
+
+@user_bp.route('/logout')
+def logout():
+    # Видалення користувача із сесії
+    session.pop('username', None)
+    return redirect(url_for("users.get_profile"))
+
 
 
 @user_bp.route('/hi/<string:name>')     # /hi/ivan?age=30
