@@ -6,7 +6,7 @@
 
 <div class="container mt-5 ">
     <h2 class="text-center">Login</h2>
-    <form action="" method="post" class="mt-4 mb-5 login_form">
+    <form action="{{ url_for('users.login') }}" method="post" class="mt-4 mb-5 login_form">
         <div class="form-group mb-3">
             <label for="username">Ім'я користувача:</label>
             <input type="text" class="form-control" id="username" name="username" placeholder="Введіть ім'я користувача" required>

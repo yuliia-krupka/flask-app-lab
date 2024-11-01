@@ -1,16 +1,50 @@
 from . import user_bp
 from flask import render_template, request, redirect, url_for, make_response, session, flash
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 
-@user_bp.route('/profile')
+@user_bp.route('/profile', methods=['GET', 'POST'])
 def get_profile():
     if "username" in session:
         username_value = session["username"]
-        return render_template("profile.html", username=username_value)
+        color_theme = request.cookies.get('color_theme', 'light')
+        cookies = request.cookies
+        if request.method == 'POST':
+            if 'add_cookie' in request.form:
+                key = request.form['cookie_key']
+                value = request.form['cookie_value']
+                duration = request.form.get('cookie_duration', type=int)
+                response = make_response(redirect(url_for('users.get_profile')))
+                response.set_cookie(key, value, max_age=duration)
+                flash(f"Cookie was added successfully!", "success")
+                return response
+
+            elif 'delete_cookie' in request.form:
+                key = request.form['cookie_key_delete']
+                response = make_response(redirect(url_for('users.get_profile')))
+                response.set_cookie(key, '', expires=0)
+                flash(f"Cookie was deleted successfully!", "success")
+                return response
+
+            elif 'delete_all_cookies' in request.form:
+                response = make_response(redirect(url_for('users.get_profile')))
+                for key in cookies:
+                    response.set_cookie(key, '', expires=0)
+                flash("All cookies were deleted successfully", "success")
+                return response
+
+        return render_template("profile.html", username=username_value, cookies=cookies, color_theme=color_theme)
     else:
         flash("Error: access denied. Please login.", "danger")
         return redirect(url_for("users.login"))
+
+
+@user_bp.route('/set_color_theme', methods=['POST'])
+def set_color_theme():
+    color_theme = request.form['color_theme']
+    response = make_response(redirect(url_for('users.get_profile')))
+    response.set_cookie('color_theme', color_theme, max_age=2592000)
+    return response
 
 
 @user_bp.route("/login", methods=['GET', 'POST'])
