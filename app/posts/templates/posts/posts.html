@@ -4,14 +4,37 @@
 
 {% block content %}
 
-<h1>Articles</h1>
+<h1 class="text-center mt-5">Posts</h1>
+<div class="container">
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow ahref">
+                <div class="card-body">
+                    <img class="card-img-top" src="{{ url_for('static', filename='images/resumeImage.png') }}"
+                         alt="Card image" height="300px">
+                    <h3 class="card-title mt-2">
+                        <a href="{{ url_for('posts.detail_post', id=post['id']) }}">{{ post.title }}</a>
+                    </h3>
 
-<ul>
-    {% for post in posts%}
-        <li> {{post["id"]}} -
-             <a href="{{ url_for('posts.detail_post', id=post['id']) }}">{{post["title"]}}</a>
-        </li>
-    {% endfor %}
-</ul>
+                    <p class="card-text">{{ post.content[:150] }}...</p>
+                    <p class="card-text"><strong>Category:</strong> {{ post.category }}</p>
+                    <p class="card-text"><strong>Author:</strong> {{ post.author }}</p>
+                    <p class="card-text"><small class="text-muted">{{ post.publish_date }}</small></p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            {% if post.is_active %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}

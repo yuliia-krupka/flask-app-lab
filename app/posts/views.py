@@ -1,23 +1,47 @@
 from . import post_bp
-from flask import render_template, abort, flash, url_for, redirect
+from flask import render_template, abort, flash, url_for, redirect, session, json
 from .forms import PostForm
 
-posts = [
-    {"id": 1, 'title': 'My First Post', 'content': 'This is the content of my first post.', 'author': 'John Doe'},
-    {"id": 2, 'title': 'Another Day', 'content': 'Today I learned about Flask macros.', 'author': 'Jane Smith'},
-    {"id": 3, 'title': 'Flask and Jinja2', 'content': 'Jinja2 is powerful for templating.', 'author': 'Mike Lee'}
-]
+try:
+    with open('posts.json', 'r') as f:
+        posts = json.load(f)
+except FileNotFoundError:
+    posts = []
 
 
 @post_bp.route('/add_post', methods=['GET', 'POST'])
 def add_post():
     form = PostForm()
     if form.validate_on_submit():
+        new_id = max([post['id'] for post in posts], default=0) + 1
+        id = new_id
         title = form.title.data
+        content = form.content.data
+        publish_date = form.publish_date.data.strftime('%d.%m.%Y')
+        category = form.category.data
+        is_active = form.is_active.data
+        author = session.get('username')
+
+        new_post = {
+            'id': id,
+            'title': title,
+            'content': content,
+            'publish_date': publish_date,
+            'category': category,
+            'is_active': is_active,
+            'author': author
+        }
+
+        posts.append(new_post)
+
+        with open('posts.json', 'w') as f:
+            json.dump(posts, f, indent=2)
+
         # обробка логіки
         flash(f"Post {title} added successfully! ", "success")
         return redirect(url_for(".get_posts"))
     return render_template("add_post.html", form=form)
+
 
 @post_bp.route('/')
 def get_posts():
@@ -26,7 +50,8 @@ def get_posts():
 
 @post_bp.route('/<int:id>')
 def detail_post(id):
-    if id > 3:
+    post = next((p for p in posts if p['id'] == id), None)
+    if post:
+        return render_template('detail_post.html', post=post)
+    else:
         abort(404)
-    post = posts[id - 1]
-    return render_template("detail_post.html", post=post)

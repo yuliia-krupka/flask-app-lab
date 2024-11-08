@@ -4,10 +4,13 @@
 
 {% block content %}
 
-    <h1>Post № {{post["id"]}} - {{post["title"]}} </h1>
+<h1> {{post["title"]}} </h1>
 
+<div class="card-body p-4 post_body mb-5">
     <p>{{ post.get('content') }}</p>
+</div>
 
-    <a href="{{ url_for('posts.get_posts')}}">Return posts</a>
+
+<a href="{{ url_for('posts.get_posts')}}" class="btn btn-warning mb-4">Return to posts</a>
 
 {% endblock %}
