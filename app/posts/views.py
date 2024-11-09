@@ -2,17 +2,19 @@ from . import post_bp
 from flask import render_template, abort, flash, url_for, redirect, session, json
 from .forms import PostForm
 
-try:
-    with open('posts.json', 'r') as f:
-        posts = json.load(f)
-except FileNotFoundError:
-    posts = []
+def load_posts():
+    try:
+        with open('posts.json', 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
 
 
 @post_bp.route('/add_post', methods=['GET', 'POST'])
 def add_post():
     form = PostForm()
     if form.validate_on_submit():
+        posts = load_posts()
         new_id = max([post['id'] for post in posts], default=0) + 1
         id = new_id
         title = form.title.data
@@ -45,11 +47,13 @@ def add_post():
 
 @post_bp.route('/')
 def get_posts():
+    posts = load_posts()
     return render_template("posts.html", posts=posts)
 
 
 @post_bp.route('/<int:id>')
 def detail_post(id):
+    posts = load_posts()
     post = next((p for p in posts if p['id'] == id), None)
     if post:
         return render_template('detail_post.html', post=post)

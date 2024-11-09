@@ -34,5 +34,14 @@
     "is_active": true,
     "publish_date": "08.11.2024",
     "title": "Test4"
+  },
+  {
+    "author": "user12",
+    "category": "tech",
+    "content": " test 5 content   test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content   test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content   test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content   test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content   test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content  test 5 content ",
+    "id": 4,
+    "is_active": true,
+    "publish_date": "09.11.2024",
+    "title": "Test5"
   }
 ]
