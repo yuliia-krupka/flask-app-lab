@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "title": "Test new post",
+        "content": "jdgfudsgbsdhgvisodhiphvi",
+        "publish_date": "12.11.2024",
+        "category": "tech",
+        "author": null,
+        "is_active": true
+    },
+    {
+        "id": 2,
+        "title": "Test post 2",
+        "content": "bjdkbvjsdbvlsbdvlsdlivbs",
+        "publish_date": "12.11.2024",
+        "category": "science",
+        "author": null,
+        "is_active": false
+    },
+    {
+        "id": 3,
+        "title": "Test3",
+        "content": "hkguguogogou",
+        "publish_date": "12.11.2024",
+        "category": "lifestyle",
+        "author": "user12",
+        "is_active": true
+    }
+]

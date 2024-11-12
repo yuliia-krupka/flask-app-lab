@@ -9,7 +9,7 @@
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         {% from 'form_macros.html' import render_field %}
-        {{ render_field(form.title) }}
+        {{ render_field(form.title, placeholder="Enter title") }}
         {{ render_field(form.content) }}
         {{ render_field(form.publish_date) }}
         {{ render_field(form.category) }}

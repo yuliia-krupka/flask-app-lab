@@ -1,47 +1,27 @@
 from . import post_bp
-from flask import render_template, abort, flash, url_for, redirect, session, json
+from flask import render_template, abort, flash, url_for, redirect, session, json, request
 from .forms import PostForm
-
-def load_posts():
-    try:
-        with open('posts.json', 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return []
+from .utils import load_posts, save_post, get_post
 
 
-@post_bp.route('/add_post', methods=['GET', 'POST'])
+@post_bp.route('/add_post', methods=["GET", "POST"])
 def add_post():
     form = PostForm()
     if form.validate_on_submit():
-        posts = load_posts()
-        new_id = max([post['id'] for post in posts], default=0) + 1
-        id = new_id
         title = form.title.data
         content = form.content.data
         publish_date = form.publish_date.data.strftime('%d.%m.%Y')
         category = form.category.data
         is_active = form.is_active.data
         author = session.get('username')
-
-        new_post = {
-            'id': id,
-            'title': title,
-            'content': content,
-            'publish_date': publish_date,
-            'category': category,
-            'is_active': is_active,
-            'author': author
-        }
-
-        posts.append(new_post)
-
-        with open('posts.json', 'w') as f:
-            json.dump(posts, f, indent=2)
-
         # обробка логіки
-        flash(f"Post {title} added successfully! ", "success")
+        new_post = {"id": len(load_posts()) + 1, 'title': title, 'content': content, 'publish_date': publish_date,
+                    'category': category, 'author': author, 'is_active': is_active}
+        save_post(new_post)
+        flash(f"Post {title} added successfully!", "success")
         return redirect(url_for(".get_posts"))
+    elif request.method == "POST":
+        flash(f"Enter the correct data in the form!", "danger")
     return render_template("add_post.html", form=form)
 
 
@@ -53,9 +33,7 @@ def get_posts():
 
 @post_bp.route('/<int:id>')
 def detail_post(id):
-    posts = load_posts()
-    post = next((p for p in posts if p['id'] == id), None)
-    if post:
-        return render_template('detail_post.html', post=post)
-    else:
-        abort(404)
+    post = get_post(id)
+    if not post:
+        return abort(404)
+    return render_template("detail_post.html", post=post)
