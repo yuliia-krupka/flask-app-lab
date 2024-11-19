@@ -19,12 +19,13 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow ahref">
                 <div class="card-body">
-                    <img src="{{ url_for('.static', filename='images/resumeImage2.png') }}" class="card-img-top" height="300px">
+                    <img src="{{ url_for('.static', filename='images/resumeImage2.png') }}" class="card-img-top"
+                         height="300px">
                     <h3 class="card-title mt-2">
                         <a href="{{ url_for('posts.detail_post', id=post['id']) }}">{{ post.title | title }}</a>
                     </h3>
-
-                   <p class="card-text">{{ post.content | truncate(23) }}</p>
+                    <p class="card-text">Post ID: {{ post.id }}</p>
+                    <p class="card-text">{{ post.content | truncate(23) }}</p>
                     <p class="card-text"><strong>Category:</strong> {{ post.category }}</p>
                     <p class="card-text"><strong>Author:</strong> {{ post.author }}</p>
                     <p class="card-text"><small class="text-muted">{{ post.publish_date }}</small></p>

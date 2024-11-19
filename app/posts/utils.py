@@ -3,7 +3,7 @@ import json
 URL_JSON = 'app/posts/posts.json'
 
 
-def load_posts():
+def load_posts() -> list[dict]:
     try:
         with open(file=URL_JSON, mode='r') as f:
             return json.load(f)

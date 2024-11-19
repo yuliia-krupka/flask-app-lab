@@ -1,6 +1,9 @@
 from . import post_bp
 from flask import render_template, abort, flash, url_for, redirect, session, json, request
 from .forms import PostForm
+from .models import Post
+from app import db
+
 from .utils import load_posts, save_post, get_post
 
 
@@ -15,9 +18,12 @@ def add_post():
         is_active = form.is_active.data
         author = session.get('username')
         # обробка логіки
-        new_post = {"id": len(load_posts()) + 1, 'title': title, 'content': content, 'publish_date': publish_date,
-                    'category': category, 'author': author, 'is_active': is_active}
-        save_post(new_post)
+        new_post = Post(title=title, content=content)
+        # save_post(new_post)
+
+        db.session.add(new_post)
+        db.session.commit()
+
         flash(f"Post {title} added successfully!", "success")
         return redirect(url_for(".get_posts"))
     elif request.method == "POST":
@@ -27,7 +33,8 @@ def add_post():
 
 @post_bp.route('/')
 def get_posts():
-    posts = load_posts()
+    stmt = db.select(Post).order_by(Post.title)
+    posts = db.session.scalars(stmt).all()
     return render_template("posts.html", posts=posts)
 
 
