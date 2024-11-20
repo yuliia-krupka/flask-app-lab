@@ -29,7 +29,7 @@ def add_post():
 
 @post_bp.route('/')
 def get_posts():
-    stmt = db.select(Post).order_by(Post.posted)
+    stmt = db.select(Post).order_by(Post.posted.desc())
     posts = db.session.scalars(stmt).all()
     return render_template("posts.html", posts=posts)
 
