@@ -36,15 +36,13 @@ def get_posts():
 
 @post_bp.route('/<int:id>')
 def detail_post(id):
-    post = Post.query.get_or_404(id)
-    if not post:
-        return abort(404)
+    post = db.get_or_404(Post, id)
     return render_template("detail_post.html", post=post)
 
 
 @post_bp.route('/delete/<int:id>', methods=["POST"])
 def delete_post(id):
-    post = Post.query.get_or_404(id)
+    post = db.get_or_404(Post, id)
     db.session.delete(post)
     db.session.commit()
     flash(f"Post '{post.title}' has been deleted successfully!", "success")
@@ -53,7 +51,7 @@ def delete_post(id):
 
 @post_bp.route('/edit/<int:post_id>', methods=['GET', 'POST'])
 def edit_post(post_id):
-    post = Post.query.get_or_404(post_id)
+    post = db.get_or_404(Post, post_id)
     form = PostForm(obj=post)
 
     form.publish_date.data = post.posted
