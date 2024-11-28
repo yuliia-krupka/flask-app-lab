@@ -1,22 +1,40 @@
 from . import post_bp
 from flask import render_template, abort, flash, url_for, redirect, session, json, request
 from .forms import PostForm
-from .models import Post
+from .models import Post, Tag
 from app import db
+from ..users.models import User
 
 
 @post_bp.route('/add_post', methods=["GET", "POST"])
 def add_post():
     form = PostForm()
+
+    # отримання списку авторів з бд
+    authors = User.query.all()
+    form.author.choices = [(author.id, author.username) for author in authors]
+
+    tags = Tag.query.all()
+    form.tags.choices = [(tag.id, tag.name) for tag in tags]
+
+
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
         posted = form.publish_date.data
         category = form.category.data
         is_active = form.is_active.data
-        author = session.get('username')
-        new_post = Post(title=title, content=content, posted=posted, category=category, author=author,
-                        is_active=is_active)
+        author_id = form.author.data
+        author = User.query.get(author_id)
+        tags = form.tags.data
+
+        new_post = Post(title=title, content=content, posted=posted, category=category,
+                        is_active=is_active, author=author)
+
+        for t in tags:
+            tag = Tag.query.get(t)
+            new_post.tags.append(tag)
+
         db.session.add(new_post)
         db.session.commit()
 

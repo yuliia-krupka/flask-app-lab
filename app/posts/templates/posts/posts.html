@@ -29,6 +29,12 @@
                     <p class="card-text"><strong>Category:</strong> {{ post.category }}</p>
                     <p class="card-text"><strong>Author:</strong> {{ post.author }}</p>
                     <p class="card-text"><small class="text-muted">Дата публікації: {{ post.posted }}</small></p>
+                    <p class="card-text"><small class="text-muted">Tags:
+                        {% for tag in post.tags %}
+                        <span class="tag" style="color: orange;">{{ tag.name }}</span> /
+                        {% endfor %}
+                    </small></p>
+
                     <p class="card-text">
                         <small class="text-muted">
                             {% if post.is_active %}

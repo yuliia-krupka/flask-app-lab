@@ -13,6 +13,12 @@
     <p>Category: {{ post.category }} </p>
     <p>Author: {{ post.author }} </p>
     <p>Date: {{ post.posted }} </p>
+    <p>Tags:
+        {% for tag in post.tags %}
+        <span style="color: orange;">{{ tag.name }}</span> /
+        {% endfor %}
+    </p>
+
 
 </div>
 <div class="mt-5 mb-5">
