@@ -1,4 +1,5 @@
 from flask_login import login_user, login_required, logout_user, current_user
+from sqlalchemy import select
 
 from . import user_bp
 from flask import render_template, request, redirect, url_for, make_response, session, flash
@@ -10,39 +11,41 @@ from .. import db
 
 
 @user_bp.route('/profile', methods=['GET', 'POST'])
+@login_required
 def get_profile():
-    if "username" in session:
-        username_value = session["username"]
-        color_theme = request.cookies.get('color_theme', 'light')
-        cookies = request.cookies
-        if request.method == 'POST':
-            if 'add_cookie' in request.form:
-                key = request.form['cookie_key']
-                value = request.form['cookie_value']
-                duration = request.form.get('cookie_duration', type=int)
-                response = make_response(redirect(url_for('users.get_profile')))
-                response.set_cookie(key, value, max_age=duration)
-                flash(f"Cookie was added successfully!", "success")
-                return response
+    color_theme = request.cookies.get('color_theme', 'light')
+    cookies = request.cookies
 
-            elif 'delete_cookie' in request.form:
-                key = request.form['cookie_key_delete']
-                response = make_response(redirect(url_for('users.get_profile')))
+    if request.method == 'POST':
+        if 'add_cookie' in request.form:
+            key = request.form['cookie_key']
+            value = request.form['cookie_value']
+            duration = request.form.get('cookie_duration', type=int)
+            response = make_response(redirect(url_for('users.get_profile')))
+            response.set_cookie(key, value, max_age=duration)
+            flash("Cookie was added successfully!", "success")
+            return response
+
+        elif 'delete_cookie' in request.form:
+            key = request.form['cookie_key_delete']
+            response = make_response(redirect(url_for('users.get_profile')))
+            response.set_cookie(key, '', expires=0)
+            flash("Cookie was deleted successfully!", "success")
+            return response
+
+        elif 'delete_all_cookies' in request.form:
+            response = make_response(redirect(url_for('users.get_profile')))
+            for key in cookies:
                 response.set_cookie(key, '', expires=0)
-                flash(f"Cookie was deleted successfully!", "success")
-                return response
+            flash("All cookies were deleted successfully", "success")
+            return response
 
-            elif 'delete_all_cookies' in request.form:
-                response = make_response(redirect(url_for('users.get_profile')))
-                for key in cookies:
-                    response.set_cookie(key, '', expires=0)
-                flash("All cookies were deleted successfully", "success")
-                return response
-
-        return render_template("profile.html", username=username_value, cookies=cookies, color_theme=color_theme)
-    else:
-        flash("Error: access denied. Please login.", "danger")
-        return redirect(url_for("users.login"))
+    return render_template(
+        "profile.html",
+        username=current_user.username,
+        cookies=cookies,
+        color_theme=color_theme
+    )
 
 
 @user_bp.route('/set_color_theme', methods=['POST'])
@@ -131,7 +134,7 @@ def login():
 @user_bp.route("/account")
 @login_required
 def account():
-    return render_template("account.html", user=current_user)
+    return render_template("account.html", title="Account")
 
 
 @user_bp.route('/logout')
@@ -144,5 +147,5 @@ def logout():
 @user_bp.route('/get_all_users', methods=['GET'])
 @login_required
 def get_all_users():
-    users = User.query.all()
+    users = db.session.execute(select(User)).scalars().all()
     return render_template('users.html', users=users)

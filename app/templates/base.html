@@ -17,7 +17,11 @@
                     <a class="navbar-brand" href="/homepage">Home</a>
                     <a class="navbar-brand" href="/resume">Моє резюме</a>
                     <a class="navbar-brand" href="/post">Пости</a>
+                    {% if current_user.is_authenticated %}
                     <a class="navbar-brand" href="/user/get_all_users">Користувачі</a>
+                    <a class="navbar-brand" href="/user/profile">Профіль(old)</a>
+                    <a class="navbar-brand" href="/user/account">Акаунт</a>
+                    {% endif %}
                 </div>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -34,7 +38,6 @@
 
                 <div class="ms-auto">
                     {% if current_user.is_authenticated %}
-                    <a class="navbar-brand" href="/user/account">Акаунт</a>
                     <a class="navbar-brand" href="/user/logout">Вихід</a>
                     {% else %}
                     <a class="navbar-brand" href="/user/login">Вхід</a>

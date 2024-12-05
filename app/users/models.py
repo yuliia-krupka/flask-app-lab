@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from app import db, bcrypt, login_manager
 from flask_login import UserMixin
 
@@ -22,4 +24,5 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.get_or_404(User, user_id)
+
