@@ -4,19 +4,26 @@
 
 {% block content %}
 
-<div class="container mt-5 ">
-    <h2 class="text-center">Login</h2>
-    <form action="{{ url_for('users.login') }}" method="post" class="mt-4 mb-5 login_form">
-        <div class="form-group mb-3">
-            <label for="username">Ім'я користувача:</label>
-            <input type="text" class="form-control" id="username" name="username" placeholder="Введіть ім'я користувача" required>
-        </div>
-        <div class="form-group mb-3">
-            <label for="password">Пароль:</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Введіть пароль" required>
-        </div>
-        <button type="submit" class="btn btn-dark w-100">Увійти</button>
-    </form>
+<div class=" mb-5 mt-3">
+    <h1 class="text-center">Login</h1>
+    <div class="card-body">
+        <form method="post" action="{{ url_for('users.login') }}" class="login_form">
+            {{ form.csrf_token }}
+            <div class="mb-3">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control") }}
+            </div>
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+            </div>
+            <div class="mb-3 form-check">
+                {{ form.remember(class="form-check-input") }}
+                {{ form.remember.label(class="form-check-label") }}
+            </div>
+            <button type="submit" class="btn btn-warning">Login</button>
+        </form>
+    </div>
 </div>
 
 {% endblock %}

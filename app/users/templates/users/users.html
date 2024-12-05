@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Users List{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Users List ({{ users | length }})</h2>
+
+    {% if users | length > 0 %}
+    <table class="table table-bordered mb-5 mt-3">
+        <thead>
+        <tr>
+            <th style="background-color: #ffc107">Id</th>
+            <th style="background-color: #ffc107">Username</th>
+            <th style="background-color: #ffc107">Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-warning mt-4 text-center">
+        There are no registered users :(
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
