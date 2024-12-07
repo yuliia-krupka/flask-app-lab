@@ -1,15 +1,21 @@
 import unittest
-
-from flask import session
+from bs4 import BeautifulSoup
 from app import create_app, db, bcrypt
 from app.users.models import User
+
+
+def get_csrf_token(response):
+    """Отримати CSRF-токен зі сторінки."""
+    soup = BeautifulSoup(response.data, "html.parser")
+    csrf_input = soup.find("input", {"name": "csrf_token"})
+    return csrf_input["value"] if csrf_input else None
 
 
 class FlaskAppTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = create_app(config_name="config_test")
-        self.app.config["WTF_CSRF_ENABLED"] = False
+        self.app.config["WTF_CSRF_ENABLED"] = True
         self.client = self.app.test_client()
         self.ctx = self.app.app_context()
         self.ctx.push()
@@ -56,46 +62,58 @@ class FlaskAppTestCase(unittest.TestCase):
 
     def test_register_user(self):
         """Тестування коректного збереження користувача в БД при реєстрації."""
-        response = self.client.post("user/register", data={
-            "username": "newuser",
-            "email": "new@example.com",
-            "password": "password123",
-            "confirm_password": "password123"
-        })
-        self.assertEqual(response.status_code, 302)
+        with self.client as client:
+            response = client.get("user/register")
+            self.assertEqual(response.status_code, 200)
+            csrf_token = get_csrf_token(response)
 
-        user = User.query.filter_by(username="newuser").first()
-        self.assertIsNotNone(user)
-        self.assertEqual(user.email, "new@example.com")
-        self.assertTrue(bcrypt.check_password_hash(user.password, "password123"))
+            response = client.post("user/register", data={
+                "username": "newuser",
+                "email": "new@example.com",
+                "password": "password123",
+                "confirm_password": "password123",
+                "csrf_token": csrf_token
+            })
+
+            self.assertEqual(response.status_code, 302)
+
+            user = User.query.filter_by(username="newuser").first()
+            self.assertIsNotNone(user)
+            self.assertEqual(user.email, "new@example.com")
+            self.assertTrue(bcrypt.check_password_hash(user.password, "password123"))
+
+    # ___ LOGIN LOGOUT ____
 
     def test_login_user(self):
-        """Тестування входу користувача на сайт."""
+        """Тестування входу користувача на сайт з CSRF-захистом."""
+        response = self.client.get("user/login")
+        self.assertEqual(response.status_code, 200)
+        csrf_token = get_csrf_token(response)
+
         response = self.client.post("user/login", data={
             "username": "testuser",
             "password": "password123",
-            "remember": False
+            "csrf_token": csrf_token
         })
-
         self.assertEqual(response.status_code, 302)
 
-        with self.client:
-            self.client.get("/")
+        with self.client.session_transaction() as session:
             self.assertIn("_user_id", session)
 
     def test_logout_user(self):
         """Тестування виходу користувача з сайту."""
+        response = self.client.get("user/login")
+        csrf_token = get_csrf_token(response)
         self.client.post("user/login", data={
             "username": "testuser",
             "password": "password123",
-            "remember": False
+            "csrf_token": csrf_token
         })
 
         response = self.client.get("user/logout")
         self.assertEqual(response.status_code, 302)
 
-        with self.client:
-            self.client.get("/")
+        with self.client.session_transaction() as session:
             self.assertNotIn("_user_id", session)
 
 

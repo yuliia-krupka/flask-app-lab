@@ -2,4 +2,6 @@ SECRET_KEY = "secret"
 FLASK_DEBUG = 1
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///data-test.sqlite'
+TESTING = True
+WTF_CSRF_ENABLED = True
 SQLALCHEMY_TRACK_MODIFICATIONS = False

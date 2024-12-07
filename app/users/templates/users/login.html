@@ -8,7 +8,7 @@
     <h1 class="text-center">Login</h1>
     <div class="card-body">
         <form method="post" action="{{ url_for('users.login') }}" class="login_form">
-            {{ form.csrf_token }}
+            {{ form.hidden_tag() }}
             <div class="mb-3">
                 {{ form.username.label(class="form-label") }}
                 {{ form.username(class="form-control") }}
