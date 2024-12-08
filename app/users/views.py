@@ -1,3 +1,7 @@
+from werkzeug.utils import secure_filename
+import uuid as uuid
+import os
+
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy import select
 
@@ -5,9 +9,10 @@ from . import user_bp
 from flask import render_template, request, redirect, url_for, make_response, session, flash
 from datetime import timedelta
 
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, UpdateAccountForm, ChangePasswordForm
 from .models import User
 from .. import db
+from flask import current_app
 
 
 @user_bp.route('/profile', methods=['GET', 'POST'])
@@ -135,6 +140,42 @@ def login():
 @login_required
 def account():
     return render_template("account.html", title="Account")
+
+
+@user_bp.route("/update_account", methods=['GET', 'POST'])
+@login_required
+def update_account():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.about_me = form.about_me.data
+        if form.image.data:
+            pic_filename = secure_filename(form.image.data.filename)
+            pic_name = str(uuid.uuid1()) + "_" + pic_filename
+            save_path = os.path.join(current_app.root_path, 'users/static/images', pic_name)
+            form.image.data.save(save_path)
+            current_user.image_file = pic_name
+        db.session.commit()
+        flash('Your account was updated!', 'success')
+        return redirect(url_for('users.account'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.about_me.data = current_user.about_me
+    return render_template('update_account.html', form=form)
+
+
+@user_bp.route("/change_password", methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        current_user.change_password(form.new_password.data)
+        db.session.commit()
+        flash('Your password has been updated!', 'success')
+        return redirect(url_for('users.account'))
+    return render_template('change_password.html', form=form)
 
 
 @user_bp.route('/logout')
