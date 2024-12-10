@@ -4,45 +4,48 @@
 
 {% block content %}
 
-<div class=" mb-5 mt-3">
-    <h1 class="text-center">Update account</h1>
-    <div class="card-body">
-        <form method="POST" action="{{ url_for('users.update_account') }}" enctype="multipart/form-data"
-              class="login_form">
-            {{ form.hidden_tag() }}
-            <div class="form-group">
-                {{ form.username.label(class="form-label") }}
-                {{ form.username(class="form-control") }}
-                {% for error in form.username.errors %}
-                <small class="text-danger">{{ error }}</small>
-                {% endfor %}
-            </div>
+    <div class=" mb-5 mt-3">
+        <h1 class="text-center">Update account</h1>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('users.update_account') }}" enctype="multipart/form-data"
+                  class="login_form">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="form-control") }}
+                    {% for error in form.username.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
 
-            <div class="form-group mt-3">
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(class="form-control") }}
-                {% for error in form.email.errors %}
-                <small class="text-danger">{{ error }}</small>
-                {% endfor %}
-            </div>
-            <div>
-                {{ form.image.label(class="form-label") }}
-                {{ form.image(class="form-control") }}
-            </div>
-            <div class="mb-3">
-                {{ form.about_me.label(class="form-label") }}
-                {{ form.about_me(class="form-control", rows=8) }}
-                <small class="form-text text-muted">(allowed up to 750 chars)</small>
-            </div>
+                <div class="form-group mt-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control") }}
+                    {% for error in form.email.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ form.image.label(class="form-label") }}
+                    {{ form.image(class="form-control") }}
+                    {% for error in form.image.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    {{ form.about_me.label(class="form-label") }}
+                    {{ form.about_me(class="form-control", rows=8) }}
+                    <small class="form-text text-muted">(allowed up to 750 chars)</small>
+                </div>
 
-            <div class="form-group mt-4 text-center">
-                {{ form.submit(class="btn btn-success") }}
-            </div>
-            <div class="form-group mt-4 text-center">
-                <a href="{{ url_for('users.change_password') }}" class="text-info">Change password</a></p>
-            </div>
-        </form>
+                <div class="form-group mt-4 text-center">
+                    {{ form.submit(class="btn btn-success") }}
+                </div>
+                <div class="form-group mt-4 text-center">
+                    <a href="{{ url_for('users.change_password') }}" class="text-info">Change password</a></p>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
 {% endblock %}

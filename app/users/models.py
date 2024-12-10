@@ -1,5 +1,5 @@
-from datetime import datetime, timezone
-import pytz
+from datetime import datetime
+from pytz import timezone
 from app import db, bcrypt, login_manager
 from flask_login import UserMixin
 
@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(60), nullable=False)
     image_file = db.Column(db.String(20), nullable=True, default='default.jpg')
     about_me = db.Column(db.Text, nullable=True)
-    last_seen = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Europe/Kiev')))
+    last_seen = db.Column(db.DateTime, default=datetime.now(timezone('Europe/Kyiv')))
 
     def __repr__(self):
         return f"User('{self.email}')"
@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
         return bcrypt.check_password_hash(self.password, password)
 
     def update_last_seen(self):
-        self.last_seen = datetime.now(pytz.timezone('Europe/Kiev'))
+        self.last_seen = datetime.now(timezone('Europe/Kyiv'))
 
 
 @login_manager.user_loader
