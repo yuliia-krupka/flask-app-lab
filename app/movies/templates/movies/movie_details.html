@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }} Details{% endblock %}
+
+{% block content %}
+    <div class="container w-75 mt-4 mb-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning">
+                <h1 class="text-center text-dark mb-0">{{ movie.title }}</h1>
+            </div>
+            <div class="card-body bg-light">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card mb-4 border-warning">
+                            <div class="card-header bg-warning bg-opacity-25">
+                                <h5 class="mb-0">Description</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted mb-0">{{ movie.description }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border-warning h-100">
+                                    <div class="card-header bg-warning bg-opacity-25">
+                                        <h5 class="mb-0">Year</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="display-6 text-center mb-0">{{ movie.year }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-warning h-100">
+                                    <div class="card-header bg-warning bg-opacity-25">
+                                        <h5 class="mb-0">Rating</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="display-6 text-center mb-0">{{ movie.rate }}/10</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if movie.genres %}
+                            <div class="card mt-4 border-warning">
+                                <div class="card-header bg-warning bg-opacity-25">
+                                    <h5 class="mb-0">Genres</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% for genre in movie.genres %}
+                                        <span class="badge bg-warning text-dark me-2">{{ genre.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="card mt-4 border-warning">
+                            <div class="card-header bg-warning bg-opacity-25">
+                                <h5 class="mb-0">Uploaded By</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-0">{{ movie.author.username }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if current_user == movie.author %}
+                <div class="card-footer text-center bg-light border-top d-flex justify-content-center">
+                    <a href="{{ url_for('movies.edit_movie', id=movie.id) }}" class="btn btn-warning me-3">
+                        Edit
+                    </a>
+                    <form action="{{ url_for('movies.delete_movie', id=movie.id) }}" method="POST">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            {% endif %}
+
+
+        </div>
+    </div>
+{% endblock %}

@@ -6,9 +6,9 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
 
-
 class Base(DeclarativeBase):
     pass
+
 
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
@@ -32,15 +32,17 @@ def create_app(config_name="config"):
     with app.app_context():
         from . import views
         from app.users.models import User
+        from app.movies.models import Movie, Genre
 
         from .posts import post_bp
         from .users import user_bp
+        from .movies import movie_bp
 
         app.register_blueprint(post_bp)
         app.register_blueprint(user_bp)
+        app.register_blueprint(movie_bp)
 
         # from app.posts.models import Post
         # db.create_all()
 
     return app
-

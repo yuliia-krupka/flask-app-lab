@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %} Add Movie {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/movies.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center mb-1">Add Movie</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6 mb-5">
+                <form action="" method="post" class="style_form">
+                    {{ form.hidden_tag() }}
+
+                    {% import '_macros.html' as macros %}
+
+                    {{ macros.render_field_with_errors(form.title) }}
+                    {{ macros.render_field_with_errors(form.description) }}
+                    {{ macros.render_field_with_errors(form.year) }}
+                    {{ macros.render_field_with_errors(form.rate) }}
+                    {{ macros.render_field_with_errors(form.genres) }}
+
+                    <div class="form-group text-center mt-4">
+                        {{ form.submit(class="btn btn-warning") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
