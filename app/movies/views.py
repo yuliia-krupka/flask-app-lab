@@ -41,7 +41,7 @@ def add_movie():
         else:
             flash("This movie already exists.", "info")
 
-        return redirect(url_for('movies.get_user_movies'))
+        return redirect(url_for('.get_user_movies'))
 
     return render_template('add_movie_form.html', form=form)
 
@@ -80,7 +80,7 @@ def search_movies():
                 movies = Movie.query.join(Movie.genres).filter(Genre.name.ilike(f'%{search_query}%')).all()
             else:
                 flash("Please enter a valid genre", "danger")
-                return redirect(url_for('movies.search_movies'))
+                return redirect(url_for('.search_movies'))
 
         elif search_field == 'rate':
             if search_query.isdigit():
@@ -89,45 +89,45 @@ def search_movies():
                     movies = Movie.query.filter(Movie.rate == rate).all()
                 else:
                     flash("Please enter a valid rating (between 1 and 10)", "danger")
-                    return redirect(url_for('movies.search_movies'))
+                    return redirect(url_for('.search_movies'))
             else:
                 flash("Please enter a valid rating (integer)", "danger")
-                return redirect(url_for('movies.search_movies'))
+                return redirect(url_for('.search_movies'))
 
     return render_template('search_movies.html', form=form, movies=movies, search_query=search_query,
                            search_field=search_field)
 
 
-@movie_bp.route('/movie/<int:movie_id>', methods=['GET', 'POST'])
+@movie_bp.route('/<int:movie_id>', methods=['GET', 'POST'])
 @login_required
 def get_movie(movie_id):
     movie = db.get_or_404(Movie, movie_id)
     return render_template('movie_details.html', movie=movie, current_user=current_user)
 
 
-@movie_bp.route('/movie/<int:id>/delete', methods=['POST'])
+@movie_bp.route('/<int:id>/delete', methods=['POST'])
 @login_required
 def delete_movie(id):
     movie = db.get_or_404(Movie, id)
 
     if movie.author != current_user:
         flash("You are not authorized to delete this movie.", "danger")
-        return redirect(url_for('movies.get_movies'))
+        return redirect(url_for('.get_movies'))
 
     db.session.delete(movie)
     db.session.commit()
     flash("Movie deleted successfully!", "success")
-    return redirect(url_for('movies.get_movies'))
+    return redirect(url_for('.get_movies'))
 
 
-@movie_bp.route('/movie/<int:id>/edit', methods=['GET', 'POST'])
+@movie_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_movie(id):
     movie = db.get_or_404(Movie, id)
 
     if movie.user_id != current_user.id:
         flash("You are not authorized to edit this movie.", "danger")
-        return redirect(url_for('movies.get_movies'))
+        return redirect(url_for('.get_user_movies'))
 
     form = MovieForm(obj=movie)
     form.genres.choices = [(genre.id, genre.name) for genre in Genre.query.all()]
@@ -143,7 +143,7 @@ def edit_movie(id):
 
         db.session.commit()
         flash("Movie updated successfully!", "success")
-        return redirect(url_for('movies.get_movies'))
+        return redirect(url_for('.get_user_movies'))
     if request.method == 'GET':
         form.genres.data = [genre.id for genre in movie.genres]
 
